@@ -12,11 +12,12 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/sh': {
-        target: 'http://localhost:8003/',
+        target: 'http://127.0.0.1:8003/',
         changeOrigin: true,
         pathRewrite: {
           '^/sh': ''
-        }
+        },
+        secure: false
       }
     },
 

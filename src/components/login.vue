@@ -30,16 +30,16 @@ export default {
   },
   methods: {
     login() {
-      var crt = this;
+      var formData = new FormData();
+      formData.append('username', this.username);
+      formData.append('password', this.password);
       this.$ajax({
         method: 'post',
         url: '/login',
-        data: {
-          username: crt.username,
-          password: crt.password
-        }
+        data: formData
       }).then(res => {
-        crt.$router.push({path: '/home'});
+        console.log(res);
+        this.$router.push({path: '/home'});
       }).catch(e => {
         console.log(e);
       })
