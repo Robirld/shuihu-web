@@ -4,6 +4,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import shajax from './sh'
+import store from './store'
+import './utils'
 
 Vue.config.productionTip = false
 Vue.prototype.$ajax=shajax
@@ -12,6 +14,7 @@ Vue.prototype.$ajax=shajax
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

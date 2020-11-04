@@ -5,13 +5,14 @@
     <form>
       <div class="form-item">
         <label for="username">账号：</label>
-        <input type="text" ref="account" v-model="username" id="username" placeholder="请输入账号"/>
+        <input type="text" ref="account" class="input-login" v-model="username" id="username" placeholder="请输入账号"/>
       </div>
       <div class="form-item">
         <label for="password">密码：</label>
-        <input type="password" ref="password" v-model="password" id="password" placeholder="请输入密码"/>
+        <input type="password" ref="password" class="input-login" v-model="password" id="password" placeholder="请输入密码"/>
       </div>
       <div class="form-item">
+        <input type="checkbox" v-model="rememberMe" value="true"/><span style="font-size: 1rem;">记住我</span>
         <a class="btn btn-primary" @click="login">登陆</a>
         <a class="btn btn-success" @click="signUp">注册</a>
       </div>
@@ -20,13 +21,30 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
+import { getTokenFromCookie, setTokenToCookie, removeToken } from '@/utils/cookie'
 export default {
   name: 'login',
   data () {
     return {
-      username: 'admin',
-      password: '123456'
+      username: null,
+      password: null,
+      rememberMe: false,
+      redirect: undefined
     }
+  },
+  watch: {
+    $route: {
+      handler: function(route) {
+        this.redirect = route.query && route.query.redirect;
+      },
+      immediate: true
+    }
+  },
+  created() {
+    this.username = Cookies.get('username');
+    this.password = Cookies.get('password');
+    this.rememberMe = Cookies.get('rememberMe');
   },
   methods: {
     login() {
@@ -39,7 +57,12 @@ export default {
         data: formData
       }).then(res => {
         console.log(res);
-        this.$router.push({path: '/home'});
+        setTokenToCookie(res.data.msg, this.rememberMe);
+        this.$store.commit('setToken', {token: res.data.msg});
+        Cookies.set('username', this.username);
+        Cookies.set('password', this.password);
+        Cookies.set('rememberMe', this.rememberMe);
+        this.$router.push({path: this.redirect || '/home'});
       }).catch(e => {
         console.log(e);
       })
@@ -69,7 +92,7 @@ export default {
   color: black;
   font-size: 1.2rem;
 }
-input {
+.input-login {
   width: 13rem;
   height: 2rem;
   border: solid 0.01rem dimgrey;
@@ -77,7 +100,7 @@ input {
   padding: 0 0.5rem;
   color: #2C3E50;
 }
-input:focus {
+.input-login:focus {
   outline: none;
   border: solid 0.01rem #42B983;
 }

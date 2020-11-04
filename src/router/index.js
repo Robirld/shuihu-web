@@ -22,6 +22,10 @@ export default new Router({
       path: '/signup',
       name: '注册',
       component: (resolve) => require(['@/components/signUp'], resolve)
+    },
+    {
+      path: '/',
+      redirect: '/login'
     }
   ]
 })
